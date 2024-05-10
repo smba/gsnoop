@@ -1,4 +1,5 @@
-# Group-based Feature Selection [![Run tests](https://github.com/smba/gsnoop/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/smba/gsnoop/actions/workflows/test.yml)
+# Group-based Feature Selection ![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg)
+
 ## How to..
 
 ### Install
@@ -39,7 +40,7 @@ group_options = group_screening(x_, y_)
 # Perform causal group screening
 x_, y_ = xor_transform(x)
 y_ = np.abs(y_)
-causal_options = causal_screening(x_, y_)
+causal_options = find_hitting_set(x_, y_)
 
 # print(causal_options)
 # > [0, 1, 2, 3, 4, 5]
