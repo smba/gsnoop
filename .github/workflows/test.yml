@@ -34,6 +34,8 @@ jobs:
           python3 -m pip install --upgrade pip
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
+      - name: Install setuptools
+        run: sudo apt-get install python3-setuptools
         # Install the package using the setup.py
       - name: Install package
         run: python setup.py install
