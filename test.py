@@ -8,7 +8,7 @@ np.random.seed(1)
 
 # Specify problem space
 n_features = 50
-n_configs = 100
+n_configs = 50
 
 # Specify simple performance oracle
 func = lambda x: x[0] * x[1] * 123 + x[3] * 45 + x[4] * x[5] * 67 + 0.01
