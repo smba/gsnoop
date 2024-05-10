@@ -1,10 +1,4 @@
-# Group-based Feature Selection Framework (`gsnoop`)
-
-## PhDocumentation
-### Group Construction
-### Variance-based Feature Selection
-### Feature Selection as Minimal Hitting Set (MHS)
-
+# Group-based Feature Selection
 ## Usage
 ```python
 import numpy as np
