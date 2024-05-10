@@ -52,7 +52,7 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     return x_, y_
 
 
-def xor_transform(x: np.ndarray) -> np.ndarray:
+def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Compute pairwise XOR operations between rows of the input array x.
 
@@ -60,12 +60,12 @@ def xor_transform(x: np.ndarray) -> np.ndarray:
         x (np.ndarray): Input 2D array.
 
     Returns:
-        np.ndarray: Array containing pairwise XOR results.
+        Tuple[np.ndarray, np.ndarray]: Transformed feature and target arrays.
     """
     return np.vstack([
         np.bitwise_xor(x[i, :], x[j, :])
         for i, j in itertools.combinations(range(x.shape[0]), 2)
-    ])
+    ]), np.abs(diff_transform(y))
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:

@@ -25,8 +25,7 @@ group_options = group_screening(x_, y_)
 # > [0, 1, 2, 3, 4, 5]
 
 # Perform causal group screening
-x_ = xor_transform(x)
-y_ = np.abs(y_)
+x_,y_ = xor_transform(x, y)
 causal_options = find_hitting_set(x_, y_)
 
 # print(causal_options)
