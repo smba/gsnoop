@@ -65,7 +65,7 @@ def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]
     return np.vstack([
         np.bitwise_xor(x[i, :], x[j, :])
         for i, j in itertools.combinations(range(x.shape[0]), 2)
-    ]), np.abs(diff_transform(y))
+    ]), np.abs(diff_transform_y(y))
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
