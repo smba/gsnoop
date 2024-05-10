@@ -1,5 +1,8 @@
 # Group-based Feature Selection ![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg)
 
+## Description
+
+
 ## How to..
 
 ### Install
@@ -9,8 +12,11 @@ pip install --upgrade git+https://github.com/smba/gsnoop.git@main # upgrade
 pip install --upgrade --force-reinstall git+https://github.com/smba/gsnoop.git@main # yay
 ```
 
-### Basic Usage
-```python
+### Documentation
+<details>
+  <summary>Example usage</summary>
+  
+  ```python
 import numpy as np
 
 from gsnoop.util import diff_transform, xor_transform
@@ -45,3 +51,7 @@ causal_options = find_hitting_set(x_, y_)
 # print(causal_options)
 # > [0, 1, 2, 3, 4, 5]
 ```
+
+</details>
+
+
