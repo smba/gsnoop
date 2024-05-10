@@ -52,7 +52,7 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     return x_, y_
 
 
-def xor_transformation(x: np.ndarray) -> np.ndarray:
+def xor_transform(x: np.ndarray) -> np.ndarray:
     """
     Compute pairwise XOR operations between rows of the input array x.
 

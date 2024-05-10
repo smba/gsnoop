@@ -12,7 +12,7 @@ pip install --upgrade --force-reinstall git+https://github.com/smba/gsnoop.git@m
 ```python
 import numpy as np
 
-from gsnoop.util import diff_transform, xor_transformation
+from gsnoop.util import diff_transform, xor_transform
 from gsnoop.screening import group_screening
 from gsnoop.causal import find_hitting_set
 
