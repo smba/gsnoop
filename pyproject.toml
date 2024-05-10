@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snoop"
+version = "0.1"
+description = "Group-based feature selection."
+authors = [
+  {name = "Stefan Muehlbauer", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+  # Add your package dependencies here
+  "requests >= 2.25.1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["gsnoop"]
+
+[tool.setuptools.package-data]
+snoop = ["data/*.txt"]
