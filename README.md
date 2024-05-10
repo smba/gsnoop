@@ -1,4 +1,4 @@
-# Group-based Feature Selection
+# Group-based Feature Selection [![Run tests](https://github.com/smba/gsnoop/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/smba/gsnoop/actions/workflows/test.yml)
 ## How to..
 
 ### Install
