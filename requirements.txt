@@ -1,4 +1,3 @@
-setuptools
 scikit-learn
 numpy
 scipy
