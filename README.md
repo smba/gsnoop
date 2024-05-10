@@ -1,5 +1,14 @@
 # Group-based Feature Selection
-## Usage
+## How to..
+
+### Install
+```bash
+pip install git+https://github.com/smba/gnsoop.git@main # install 
+pip install --upgrade git+https://github.com/smba/pgnsoop.git@main # upgrade
+pip install --upgrade --force-reinstall --ignore-installed git+https://github.com/smba/pgnsoop.git@main # yay
+```
+
+### Basic Usage
 ```python
 import numpy as np
 
