@@ -14,7 +14,7 @@ pip install --upgrade --force-reinstall --ignore-installed git+https://github.co
 
 ### Documentation
 <details>
-  <summary>Example usage</summary>
+  <summary>#### Example usage</summary>
   
   ```python
 import numpy as np
