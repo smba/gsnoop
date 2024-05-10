@@ -9,7 +9,7 @@
 ```bash
 pip install git+https://github.com/smba/gsnoop.git@main # install 
 pip install --upgrade git+https://github.com/smba/gsnoop.git@main # upgrade
-pip install --upgrade --force-reinstall git+https://github.com/smba/gsnoop.git@main # yay
+pip install --upgrade --force-reinstall --ignore-installed git+https://github.com/smba/gsnoop.git@main # alles neu
 ```
 
 ### Documentation
