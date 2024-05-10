@@ -1,45 +1,33 @@
-name: Run tests
+name: Run Tests
 
 on:
   push:
     branches:
       - main
-      - dev
   pull_request:
     branches:
       - main
-      - dev
-      
+
 jobs:
   test:
+    name: Run test.py
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        # Run in all these versions of Python
-        python-version: ["3.10", "3.11", "3.12"]
-
     steps:
-        # Checkout the latest code from the repo
-      - name: Checkout repo
+      - name: Check out the code
         uses: actions/checkout@v2
-        # Setup which version of Python to use
-      - name: Set Up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
-        # Display the Python version being used
-      - name: Update pip
+          python-version: '3.10'
+
+      - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-      - name: Display Python version
-        run: python -c "import sys; print(sys.version)"
-      - name: Install setuptools
-        run: sudo apt-get install -y python-setuptools #sudo apt-get install python3-setuptools
-        # Install the package using the setup.py
-      - name: Install package
-        run: python setup.py install
-        # Install pytest (you can use some other testing utility)
-        # Run the tests. I'm using pytest and the file is in the tests directory.
-      - name: Run tests
+          pip install -r requirements.txt || echo "No requirements.txt found"
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
+
+      - name: Run Tests
         run: python test.py
