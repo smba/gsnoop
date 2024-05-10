@@ -3,9 +3,9 @@
 
 ### Install
 ```bash
-pip install git+https://github.com/smba/gnsoop.git@main # install 
-pip install --upgrade git+https://github.com/smba/pgnsoop.git@main # upgrade
-pip install --upgrade --force-reinstall --ignore-installed git+https://github.com/smba/pgnsoop.git@main # yay
+pip install git+https://github.com/smba/nsoop.git@main # install 
+pip install --upgrade git+https://github.com/smba/gnsoop.git@main # upgrade
+pip install --upgrade --force-reinstall git+https://github.com/smba/gnsoop.git@main # yay
 ```
 
 ### Basic Usage
