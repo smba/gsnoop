@@ -1,9 +1,15 @@
-# A Framework for Group-based Feature Selection 
+# A Framework for Group-based Screening
 ![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg) ![with-coffee](https://img.shields.io/badge/made%20with-%E2%98%95%EF%B8%8F%20coffee-yellow.svg)
 
-## PhDescription
+A framework for testing group-based screening strategies for _feature selection_ or _dimensionality reduction_ of large parameter spaces. The methods provided aim at identifying input features (e.g., software configuration options) associated with variation in a dependent variable (e.g., software performance). To elicit variation due to higher-order interactions (effects due to combinations of parameters), we analyze the difference of each pair of observations instead of the training set of obeservations directly. We provide two realizations of group-based screening, a step-wise _variance decomposition_, and a _solving-approach_, conceiving feature selection as a minimal [hitting set problem](https://en.wikipedia.org/wiki/Set_cover_problem#Hitting_set_formulation). 
+
+## Description
 
 ### Pairwise Feature Groups
+
+**The Cauchy-Schwarz Inequality**
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+
 ### Stepwise Variance Decomposition
 ### Interpretation as (Minimal) Hitting Set 
 
