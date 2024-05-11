@@ -6,15 +6,71 @@ A framework for testing group-based screening strategies for _feature selection_
 ## Description
 
 ### Pairwise Feature Groups
-#### Diff
-#### XOR
+```python
+>>> import numpy as np
+>>> X = np.random.choice([0, 1], size=(5, 10))
+>>> y = np.random.exponential(10, size=5)
+>>> X
+array([[0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
+       [1, 0, 1, 0, 1, 1, 0, 1, 0, 0],
+       [0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+       [1, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+       [1, 1, 0, 1, 0, 1, 1, 0, 0, 0]])
+>>> y
+array([4.42994617, 2.26268041, 0.42066676, 0.76405986, 4.94017651])
+```
+#### Group Construction via Configuration Differences
+```python
+>>> import gsnoop.util as util
+>>> x_diff = util.diff_transform_x(X)
+>>> y_diff = util.diff_transform_y(y)
+>>> x_diff
+array([[-1,  1, -1,  0,  0, -1,  1, -1,  0,  0],
+       [ 0,  0,  0, -1,  0, -1,  0, -1,  0, -1],
+       [-1,  0,  0,  0,  0,  0,  1,  0, -1,  0],
+       [-1,  0,  0, -1,  1, -1,  0,  0,  0,  0],
+       [ 1, -1,  1, -1,  0,  0, -1,  0,  0, -1],
+       [ 0, -1,  1,  0,  0,  1,  0,  1, -1,  0],
+       [ 0, -1,  1, -1,  1,  0, -1,  1,  0,  0],
+       [-1,  0,  0,  1,  0,  1,  1,  1, -1,  1],
+       [-1,  0,  0,  0,  1,  0,  0,  1,  0,  1],
+       [ 0,  0,  0, -1,  1, -1, -1,  0,  1,  0]])
+>>> y_diff
+array([ 2.16726577,  4.00927942,  3.66588631, -0.51023034,  1.84201365,
+        1.49862054, -2.6774961 , -0.34339311, -4.51950975, -4.17611665])
+```
+#### Group Construction via Bit-wise XOR
+```python
+>>> x_xor = util.xor_transform_x(X)
+>>> y_xor = util.xor_transform_y(y)
+>>> x_xor
+array([[1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+       [0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+       [1, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+       [1, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+       [1, 1, 1, 1, 0, 0, 1, 0, 0, 1],
+       [0, 1, 1, 0, 0, 1, 0, 1, 1, 0],
+       [0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+       [1, 0, 0, 1, 0, 1, 1, 1, 1, 1],
+       [1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+       [0, 0, 0, 1, 1, 1, 1, 0, 1, 0]])
+>>> y_xor
+array([2.16726577, 4.00927942, 3.66588631, 0.51023034, 1.84201365,
+       1.49862054, 2.6774961 , 0.34339311, 4.51950975, 4.17611665])
+```
+
+#### Shortcuts
+```python
+>>> x_diff, y_diff = util.diff_transform(X, y)
+>>> x_xor, y_xor = util.xor_transform(X, y)
+```
 
 ### Stepwise Variance Decomposition
 ### Interpretation as (Minimal) Hitting Set 
 
-## Documentation
+## How to..
 
-### Install
+### Installation
 ```bash
 # install
 pip install git+https://github.com/smba/gsnoop.git@main # install 
