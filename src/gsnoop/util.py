@@ -51,6 +51,32 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
     return x_, y_
 
+def xor_transform_x(x: np.ndarray) -> np.ndarray:
+    """
+    Calculate pairwise differences between rows of the input array x.
+
+    Args:
+        x (np.ndarray): Input 2D array.
+
+    Returns:
+        np.ndarray: Array containing pairwise differences.
+    """
+    np.vstack([
+        np.bitwise_xor(x[i, :], x[j, :])
+        for i, j in itertools.combinations(range(x.shape[0]), 2)
+    ])
+
+def xor_transform_y(y: np.ndarray) -> np.ndarray:
+    """
+    Calculate pairwise differences between elements of the input array y.
+
+    Args:
+        y (np.ndarray): Input 1D array.
+
+    Returns:
+        np.ndarray: Array containing pairwise differences.
+    """
+    return np.abs(diff_transform_y(y))
 
 def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -62,10 +88,7 @@ def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]
     Returns:
         Tuple[np.ndarray, np.ndarray]: Transformed feature and target arrays.
     """
-    return np.vstack([
-        np.bitwise_xor(x[i, :], x[j, :])
-        for i, j in itertools.combinations(range(x.shape[0]), 2)
-    ]), np.abs(diff_transform_y(y))
+    return xor_transform_x(x), xor_transform_y(y)
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
