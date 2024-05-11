@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import pulp
+import bitarray
 import numpy as np
 from typing import List, Set
+
 
 # Function to solve a hitting set problem instance
 def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
@@ -44,46 +46,32 @@ def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
 
     return result
 
-import numpy as np
-from typing import List, Set
 
-def find_greedy_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
-    """
-    Finds a hitting set for the given sets using a greedy algorithm.
+def find_greedy_hitting_set(bit_vectors):
+    universe_size = len(bit_vectors[0])
+    hitting_set = bitarray(universe_size)
+    hitting_set.setall(0)
 
-    Args:
-        x: A list of numpy arrays, each representing a row of binary values indicating set membership.
-        y: A list of floats representing target values which dictate if the set should be considered.
+    covered_sets = bitarray(len(bit_vectors))
+    covered_sets.setall(0)
 
-    Returns:
-        A set representing the hitting set.
-    """
-    # Initialize the sets to hit based on y values greater than a threshold (e.g., 0.1)
-    sets_to_hit = {i: set(np.where(row == 1)[0]) for i, (row, target) in enumerate(zip(x, y)) if target > 0.1}
+    while covered_sets.count(0) > 0:
+        # Select the element that appears in the maximum number of uncovered sets
+        element_coverage = [0] * universe_size
+        for i, bv in enumerate(bit_vectors):
+            if not covered_sets[i]:
+                for j in range(universe_size):
+                    if bv[j]:
+                        element_coverage[j] += 1
+        
+        max_element = element_coverage.index(max(element_coverage))
+        
+        # Add this element to the hitting set
+        hitting_set[max_element] = 1
+        
+        # Update covered sets
+        for i, bv in enumerate(bit_vectors):
+            if bv[max_element]:
+                covered_sets[i] = 1
 
-    # Create the universe of all elements and initialize the covered sets tracker
-    universe = set().union(*sets_to_hit.values())
-    covered_sets = set()
-    
-    # Initialize the hitting set
-    hitting_set = set()
-
-    # While there are uncovered sets
-    while covered_sets != sets_to_hit.keys():
-        # Find the element that is in the maximum number of uncovered sets
-        coverage_count = {element: 0 for element in universe}
-        for set_id, elements in sets_to_hit.items():
-            if set_id not in covered_sets:
-                for element in elements:
-                    coverage_count[element] += 1
-
-        # Select the element with the maximum coverage
-        max_element = max(coverage_count, key=coverage_count.get)
-        hitting_set.add(max_element)
-
-        # Update the set of covered sets
-        for set_id, elements in sets_to_hit.items():
-            if max_element in elements:
-                covered_sets.add(set_id)
-
-    return list(hitting_set)
+    return hitting_set

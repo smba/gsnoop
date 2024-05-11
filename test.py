@@ -2,14 +2,14 @@
 import numpy as np
 from gsnoop.util import diff_transform, xor_transform
 from gsnoop.screening import group_screening, lasso_screening
-from gsnoop.causal import find_hitting_set
+from gsnoop.causal import find_hitting_set, find_greedy_hitting_set
 
 # Set the random seed for reproducibility
 np.random.seed(1)
 
 # Define the size of the problem space
-n_features = 50
-n_configs = 50
+n_features = 10000
+n_configs = 1000
 
 # Define a simple performance function to simulate system behavior
 # The function models the performance of a system given a configuration of features
@@ -21,15 +21,15 @@ x = np.random.choice(2, size=(n_configs, n_features))
 y = np.array(list(map(performance_oracle, x)))
 
 # Conduct baseline screening using LASSO
-lasso_options = lasso_screening(x, y)
-print("Lasso Screening Results:", lasso_options)
+#lasso_options = lasso_screening(x, y)
+#print("Lasso Screening Results:", lasso_options)
 
 # Perform group screening using the difference transformation
-x_diff_transformed, y_diff_transformed = diff_transform(x, y)
-group_options = group_screening(x_diff_transformed, y_diff_transformed)
-print("Group Screening Results:", group_options)
+#x_diff_transformed, y_diff_transformed = diff_transform(x, y)
+#group_options = group_screening(x_diff_transformed, y_diff_transformed)
+#print("Group Screening Results:", group_options)
 
 # Perform causal analysis using the XOR transformation
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
-causal_options = find_hitting_set(x_xor_transformed, y_xor_transformed)
+causal_options = find_greedy_hitting_set(x_xor_transformed, y_xor_transformed)
 print("Causal Screening Results:", causal_options)

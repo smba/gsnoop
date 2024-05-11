@@ -15,7 +15,8 @@ requires-python = ">=3.7"
 dependencies = [
   "scikit-learn",
   "numpy",
-  "pulp"
+  "pulp",
+  "bitarray"
 ]
 
 [tool.setuptools]
