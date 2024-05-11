@@ -1,4 +1,5 @@
-# Group-based Feature Selection ![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg) ![with-coffee](https://img.shields.io/badge/made%20with-%E2%98%95%EF%B8%8F%20coffee-yellow.svg)
+# Group-based Feature Selection 
+![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg) ![with-coffee](https://img.shields.io/badge/made%20with-%E2%98%95%EF%B8%8F%20coffee-yellow.svg)
 
 ## Description
 
