@@ -1,7 +1,7 @@
 import numpy as np
 
 from gsnoop.util import diff_transform, xor_transform
-from gsnoop.screening import group_screening
+from gsnoop.screening import group_screening, lasso_screening
 from gsnoop.causal import find_hitting_set
 
 np.random.seed(1)
@@ -17,16 +17,20 @@ func = lambda x: x[0] * x[1] * 123 + x[3] * 45 + x[4] * x[5] * 67 + 0.01
 x = np.random.choice(2, size=(n_configs, n_features))
 y = np.array(list(map(func, x)))
 
+# baseline
+lasso_options = lasso_screening(x, y)
+print(lasso_options)
+
 # Perform stepwise 'group screening'
 x_, y_ = diff_transform(x, y)
 group_options = group_screening(x_, y_)
-
+print(group_options)
 # print(group_options)
 # > [0, 1, 2, 3, 4, 5]
 
 # Perform causal group screening
 x_,y_ = xor_transform(x, y)
 causal_options = find_hitting_set(x_, y_)
-
+print(causal_options)
 # print(causal_options)
 # > [0, 1, 2, 3, 4, 5]
