@@ -53,7 +53,7 @@ def parallel_constraints_covered(hitting_set, constraints):
     return np.array(results)
 
 # Function to solve causal constraints using clustering and hitting set solver
-def find_hitting_set(x, ya, b, c, d, e):
+def find_hitting_set(x, y, a, b, c, d):
     """
     Find the minimal hitting set that covers the causal constraints.
     

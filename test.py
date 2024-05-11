@@ -36,7 +36,7 @@ x_,y_ = xor_transform(x, y)
 
 for (a, b, c, d) in itertools.product([True, False], repeat=4):
     start = time.time()
-    causal_options = find_hitting_set(x_, y_a, b, c, d)
+    causal_options = find_hitting_set(x_, y_, a, b, c, d)
     duration = time.time() - start
     print((a, b, c, d), duration)
 # print(causal_options)
