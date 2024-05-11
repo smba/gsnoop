@@ -1,6 +1,3 @@
 scikit-learn
 numpy
-scipy
-pandas
-pysat
-python-sat
+pulp

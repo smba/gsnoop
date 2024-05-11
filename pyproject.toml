@@ -7,18 +7,15 @@ name = "gsnoop"
 version = "0.1"
 description = "Group-based feature selection."
 authors = [
-  {name = "Stefan Muehlbauer", email = "your.email@example.com"}
+  {name = "Stefan Muehlbauer", email = "smba@posteo.de"}
 ]
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 dependencies = [
-  "scikit-learn >= 1.4.2",
-  "pysat >= 3.2.0",
-  "python-sat >= 1.8.dev12",
-  "scipy >= 1.13.0",
-  "numpy >= 1.26.4",
-  "pandas >= 2.2.2"
+  "scikit-learn",
+  "numpy",
+  "pulp"
 ]
 
 [tool.setuptools]
