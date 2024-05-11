@@ -61,7 +61,7 @@ def xor_transform_x(x: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    np.vstack([
+    return np.vstack([
         np.bitwise_xor(x[i, :], x[j, :])
         for i, j in itertools.combinations(range(x.shape[0]), 2)
     ])
@@ -88,7 +88,7 @@ def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]
     Returns:
         Tuple[np.ndarray, np.ndarray]: Transformed feature and target arrays.
     """
-    return xor_transform_x(x), xor_transform_y(y)
+    return (xor_transform_x(x), xor_transform_y(y))
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:

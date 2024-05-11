@@ -7,7 +7,6 @@ from joblib import Parallel, delayed
 from typing import List
 from sklearn.linear_model import SGDRegressor
 
-
 def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     """
     Fits an L1-regularized (Lasso) model to the data and returns the trained model.
