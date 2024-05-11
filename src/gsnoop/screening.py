@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import copy
-
-import pandas as pd
-from sklearn.metrics import (
-    mean_absolute_percentage_error,
-    explained_variance_score,
-    r2_score,
-)
-
 import numpy as np
-import itertools
-import functools
-import multiprocessing as mp
+
 from joblib import Parallel, delayed
-from typing import List, Tuple
-
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler, MinMaxScaler
-
-from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import HalvingGridSearchCV
-
+from typing import List
 from sklearn.linear_model import SGDRegressor
+
 
 def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     """
@@ -36,15 +20,15 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     Returns:
     - SGDRegressor: The fitted model.
     """
-    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=42)
+    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=42, max_iter=5000)
     model.fit(x, y)
     return model
 
 def find_alpha_limit(
     x: np.ndarray,
     y: np.ndarray,
-    screening_split: int = 100,
-    screening_tolerance: float = 1e-8
+    screening_split: int = 5,
+    tolerance: float = 1e-5
 ) -> float:
     """
     Identifies the smallest alpha value that results in zero features being selected.
@@ -53,24 +37,45 @@ def find_alpha_limit(
     - x (np.ndarray): Feature matrix.
     - y (np.ndarray): Target vector.
     - screening_split (int): Number of alpha values to test in the initial split.
-    - screening_tolerance (float): Tolerance for refining the alpha range.
 
     Returns:
     - float: The smallest alpha value that results in zero features being selected.
     """
-    screening_alphas = np.linspace(0, 20, screening_split)
+    # Initial range of alpha values
+    lower_alpha = 0
+    upper_alpha = 20
 
-    while np.abs(screening_alphas[0] - screening_alphas[-1]) > screening_tolerance:
+    while True:
+        # Generate alpha values within the current range
+        screening_alphas = np.linspace(lower_alpha, upper_alpha, screening_split)
+
+        # Fit models for each alpha value
         models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in screening_alphas)
+
+        # Count non-zero coefficients for each model
         counts = [np.sum(m.coef_ != 0) for m in models]
 
-        # Find the index of the first model with zero non-zero coefficients
-        zero_count_idx = counts.index(0)
+        stepsize = np.abs(screening_alphas[0] - screening_alphas[1])
+        
+        if all(counts):
+            upper_alpha *= (1 + 0.1)
 
-        # Refine the range of alphas for further search
-        screening_alphas = np.linspace(screening_alphas[zero_count_idx - 1], screening_alphas[zero_count_idx + 1], screening_split)
+        # sweet spot
+        elif any(counts) and not all(counts):
+            # Find the index of the first model with zero non-zero coefficients
+            zero_count_idx = counts.index(0)
 
-    return screening_alphas[0]
+            # Update the alpha range based on the index of zero features
+            lower_alpha = screening_alphas[zero_count_idx] - stepsize
+            upper_alpha = screening_alphas[zero_count_idx] + stepsize
+
+            if abs(lower_alpha - upper_alpha) < tolerance:
+                return screening_alphas[zero_count_idx]
+
+        # only zeros, decrease lower_alpha
+        else:
+            lower_alpha = max(lower_alpha * (1 - 0.1), 0)
+
 
 def lasso_screening(
     x: np.ndarray,
@@ -88,11 +93,9 @@ def lasso_screening(
     Returns:
     - List[int]: Ranked list of most important feature indices.
     """
-    SCREENING_SPLIT = 100
-    SCREENING_TOLERANCE = 1e-8
 
     # Determine the smallest alpha value that results in zero features being selected
-    alpha_limit = find_alpha_limit(x, y, screening_split=SCREENING_SPLIT, screening_tolerance=SCREENING_TOLERANCE)
+    alpha_limit = find_alpha_limit(x, y)
 
     # Generate random alphas for hyperparameter optimization
     alphas = alpha_limit * np.random.random(size=n_simulations)
@@ -161,3 +164,5 @@ def group_screening(
 
     return options
 
+if __name__ == '__main__':
+    pass
