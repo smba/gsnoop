@@ -53,7 +53,7 @@ def parallel_constraints_covered(hitting_set, constraints):
     return np.array(results)
 
 # Function to solve causal constraints using clustering and hitting set solver
-def find_hitting_set(x, y):
+def find_hitting_set(x, ya, b, c, d, e):
     """
     Find the minimal hitting set that covers the causal constraints.
     
@@ -77,10 +77,20 @@ def find_hitting_set(x, y):
     centroid_indices = [np.argmax([np.sum(np.bitwise_and(center, row)) for row in x_constraints]) for center in centers]
 
     # Initialize the Hitman hitting set solver
+    '''
+    mxs_adapt (bool) – detect and process AtMost1 constraints in RC2
+    mxs_exhaust (bool) – apply unsatisfiable core exhaustion in RC2
+    mxs_minz (bool) – apply heuristic core minimization in RC2
+    mcs_usecld (bool) – use clause-D heuristic in the MCS enumerator
+    
+    '''
     hittingset_solver = Hitman(
         solver="glucose42", 
         htype="rc2", 
-        mxs_minz=True
+        mxs_adapt=a,
+        mxs_exhaust=b,
+        mxs_minz=c,
+        mcs_usecld=d
     )
 
     # Bootstrap initial hitting set with the selected centroid constraints
