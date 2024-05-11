@@ -69,6 +69,23 @@ array([2.16726577, 4.00927942, 3.66588631, 0.51023034, 1.84201365,
 ### Minimal Hitting Set 
 [hitting set problem](https://en.wikipedia.org/wiki/Set_cover_problem#Hitting_set_formulation)
 
+```python
+>>> sets_to_hit = [set(np.where(x_ == 1)[0]) for x_ in x_xor]
+>>> for s in sets_to_hit:
+...     print(s)
+... 
+{0, 1, 2, 5, 6, 7}
+{9, 3, 5, 7}
+{0, 8, 6}
+{0, 3, 4, 5}
+{0, 1, 2, 3, 6, 9}
+{1, 2, 5, 7, 8}
+{1, 2, 3, 4, 6, 7}
+{0, 3, 5, 6, 7, 8, 9}
+{0, 9, 4, 7}
+{3, 4, 5, 6, 8}
+```
+
 ## How to..
 
 ### Installation
