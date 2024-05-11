@@ -8,8 +8,8 @@ A framework for testing group-based screening strategies for _feature selection_
 ### Pairwise Feature Groups
 ```python
 >>> import numpy as np
->>> X = np.random.choice([0, 1], size=(5, 10))
->>> y = np.random.exponential(10, size=5)
+>>> X = np.random.choice([0, 1], size=(5, 10)) # 5 configurations over 10 features
+>>> y = np.random.exponential(10, size=5) # generate some useless data
 >>> X
 array([[0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
        [1, 0, 1, 0, 1, 1, 0, 1, 0, 0],
