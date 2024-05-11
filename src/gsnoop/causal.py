@@ -77,7 +77,11 @@ def find_hitting_set(x, y):
     centroid_indices = [np.argmax([np.sum(np.bitwise_and(center, row)) for row in x_constraints]) for center in centers]
 
     # Initialize the Hitman hitting set solver
-    hittingset_solver = Hitman(solver="g42", htype="rc2", mxs_minz=True)
+    hittingset_solver = Hitman(
+        solver="glucose42", 
+        htype="rc2", 
+        mxs_minz=True
+    )
 
     # Bootstrap initial hitting set with the selected centroid constraints
     for idx in centroid_indices:
