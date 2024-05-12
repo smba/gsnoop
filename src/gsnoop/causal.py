@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import pulp
-import bitarray
 import numpy as np
-from typing import List, Set
-
+from typing import List, Set, Dict
 
 # Function to solve a hitting set problem instance
 def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
@@ -47,31 +45,44 @@ def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
     return result
 
 
-def find_greedy_hitting_set(bit_vectors):
-    universe_size = len(bit_vectors[0])
-    hitting_set = bitarray(universe_size)
-    hitting_set.setall(0)
 
-    covered_sets = bitarray(len(bit_vectors))
-    covered_sets.setall(0)
+def find_greedy_hitting_set(x: List[np.ndarray], y: List[float], threshold: float) -> Set[int]:
+    """
+    Implements Hochbaum's greedy approximation algorithm for the hitting set problem.
 
-    while covered_sets.count(0) > 0:
-        # Select the element that appears in the maximum number of uncovered sets
-        element_coverage = [0] * universe_size
-        for i, bv in enumerate(bit_vectors):
-            if not covered_sets[i]:
-                for j in range(universe_size):
-                    if bv[j]:
-                        element_coverage[j] += 1
-        
-        max_element = element_coverage.index(max(element_coverage))
-        
-        # Add this element to the hitting set
-        hitting_set[max_element] = 1
-        
-        # Update covered sets
-        for i, bv in enumerate(bit_vectors):
-            if bv[max_element]:
-                covered_sets[i] = 1
+    Parameters:
+        Set (List[Set[int]]): A list of sets containing integers, representing the collection
+                              of subsets from which we are trying to find a minimal hitting set.
+
+    Returns:
+        Set[int]: A set of integers representing the minimal hitting set, i.e., a set of elements
+                  such that each subset in the original list has at least one element in common
+                  with this hitting set.
+    """
+
+    Set = [set(np.where(row == 1)[0]) for row, target in zip(x, y) if target > threshold]
+
+    # Initialize the hitting set as empty
+    hitting_set: Set[int] = set()
+
+    # While there are still sets left
+    while Set:
+        # Count the frequency of each element in the sets
+        frequency: Dict[int, int] = {}
+        for subset in Set:
+            for element in subset:
+                if element not in frequency:
+                    frequency[element] = 0
+                frequency[element] += 1
+
+        # Find the element with the highest frequency
+        max_freq_element: int = max(frequency, key=frequency.get)
+
+        # Add the element with the highest frequency to the hitting set
+        hitting_set.add(max_freq_element)
+
+        # Remove all sets hit by the element with the highest frequency
+        Set = [subset for subset in Set if max_freq_element not in subset]
 
     return hitting_set
+
