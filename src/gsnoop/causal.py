@@ -84,5 +84,8 @@ def find_greedy_hitting_set(x: List[np.ndarray], y: List[float], threshold: floa
         # Remove all sets hit by the element with the highest frequency
         Set = [subset for subset in Set if max_freq_element not in subset]
 
-    return hitting_set
+    return list(hitting_set)
+
+if __name__ == '__main__':
+    pass
 

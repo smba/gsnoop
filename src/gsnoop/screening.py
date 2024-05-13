@@ -117,7 +117,7 @@ def lasso_screening(
     best_features = np.where(models[best_alpha_idx].coef_ != 0)[0]
     best_features_sorted = sorted(best_features)
 
-    return ranking[:int(mean_count)]
+    return list(ranking[:int(mean_count)])
 
 def group_screening(
     x: np.ndarray,
@@ -161,7 +161,7 @@ def group_screening(
         x[:, opt] = 0
         options.append(opt)
 
-    return options
+    return list(options)
 
 if __name__ == '__main__':
     pass
