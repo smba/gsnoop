@@ -9,7 +9,7 @@ import time
 np.random.seed(1)
 
 # Define the size of the problem space
-n_features = 50
+n_features = 150
 n_configs = 150
 
 # Define a simple performance function to simulate system behavior
@@ -34,8 +34,8 @@ print("Group Screening Results:", group_options)
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
 
 
-causal_options = find_hitting_set(x_xor_transformed, y_xor_transformed)
-print("MHS solving  using PuLP:", causal_options)
+#causal_options = find_hitting_set(x_xor_transformed, y_xor_transformed)
+#print("MHS solving  using PuLP:", causal_options)
 
 causal_options = find_greedy_hitting_set(x_xor_transformed, y_xor_transformed, 0.0)
 print("MHS solving using Hochbaum's Approximation", causal_options)
