@@ -7,7 +7,7 @@ name = "gsnoop"
 version = "0.1.1"
 description = "Group-based feature selection."
 authors = [
-  {name = "Stefan Muehlbauer", email = "smba@posteo.de"}
+  {name = "Stefan Mühlbauer", email = "s.muehlbauer@mars.ucc.ie"}
 ]
 readme = "README.md"
 license = {file = "LICENSE"}
