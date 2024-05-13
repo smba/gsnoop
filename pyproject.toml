@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gsnoop"
-version = "0.1.1"
+version = "0.1.2"
 description = "Group-based feature selection."
 authors = [
   {name = "Stefan Mühlbauer", email = "s.muehlbauer@mars.ucc.ie"}
