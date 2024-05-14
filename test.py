@@ -41,7 +41,3 @@ causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("MHS solving using Hochbaum's Approximation", causal_options)
 print(causal_options)
 
-x_xor_transformed = xor_transform(x, y, k = 0.05)
-causal_options = find_greedy_hitting_set(x_xor_transformed)
-print("MHS solving using Hochbaum's Approximation with NOISE", causal_options)
-print(causal_options)
