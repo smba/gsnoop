@@ -36,7 +36,7 @@ print(group_options)
 #causal_options = find_hitting_set(x_xor_transformed)
 #print("MHS solving  using PuLP:", causal_options)
 
-x_xor_transformed = xor_transform(x, y, k = 1e-13)
+x_xor_transformed = xor_transform(x, y, k = 0)
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("MHS solving using Hochbaum's Approximation", causal_options)
 print(causal_options)
