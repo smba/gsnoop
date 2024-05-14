@@ -51,28 +51,44 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
     return x_, y_
 
-def xor_transform(x, y, k=0.00):
+def xor_transform_x(x: np.ndarray) -> np.ndarray:
     """
-    Perform a bitwise XOR transformation on rows of the matrix 'x' based on a dynamic threshold
-    derived from the differences in 'y'.
+    Calculate pairwise differences between rows of the input array x.
 
-    Parameters:
-        x (numpy.ndarray): Input matrix where each row is a data vector.
-        y (numpy.ndarray): Array of measurements associated with each row of 'x'.
-        k (float): Proportional factor for setting the threshold.
+    Args:
+        x (np.ndarray): Input 2D array.
 
     Returns:
-        numpy.ndarray: A matrix containing the result of the XOR operation for row pairs
-                       that meet the threshold condition.
+        np.ndarray: Array containing pairwise differences.
     """
-    n = x.shape[0]
-    results = []
-    for i, j in itertools.combinations(range(n), 2):
-        if np.abs(y[i] - y[j]) > k * max(y[i], y[j]):
-            xor_result = np.bitwise_xor(x[i, :], x[j, :])
-            results.append(xor_result)
+    return np.vstack([
+        np.bitwise_xor(x[i, :], x[j, :])
+        for i, j in itertools.combinations(range(x.shape[0]), 2)
+    ])
 
-    return np.vstack(results) if results else np.array(results, dtype=x.dtype)
+def xor_transform_y(y: np.ndarray) -> np.ndarray:
+    """
+    Calculate pairwise differences between elements of the input array y.
+
+    Args:
+        y (np.ndarray): Input 1D array.
+
+    Returns:
+        np.ndarray: Array containing pairwise differences.
+    """
+    return np.abs(diff_transform_y(y))
+
+def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Compute pairwise XOR operations between rows of the input array x.
+
+    Args:
+        x (np.ndarray): Input 2D array.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Transformed feature and target arrays.
+    """
+    return (xor_transform_x(x), xor_transform_y(y))
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
