@@ -80,7 +80,7 @@ def xor_transform_y(y: np.ndarray) -> np.ndarray:
 
 def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Compute pairwise XOR operations between rows of the input array x.
+    xCompute pairwise XOR operations between rows of the input array x.
 
     Args:
         x (np.ndarray): Input 2D array.
