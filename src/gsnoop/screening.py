@@ -122,7 +122,7 @@ def lasso_screening(
 def group_screening(
     x: np.ndarray,
     y: np.ndarray,
-    r2_threshold: float = 0.1
+    r2_threshold: float = 0.2
 ) -> List[int]:
     """
     Identifies important features stepwise until the R² score drops below the threshold.
