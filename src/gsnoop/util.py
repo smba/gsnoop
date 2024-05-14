@@ -66,16 +66,7 @@ def xor_transform(x, y, k=0.0):
                        that meet the threshold condition.
     """
     n = x.shape[1]
-    results = []
-    # Precompute the thresholds for all pairs to avoid recalculating in the loop
-    # thresholds = np.array([[k * max(y[i], y[j]) for j in range(n)] for i in range(n)])
-
-    for i, j in itertools.combinations(range(n), 2):
-        if np.abs(y[i] - y[j]) > 0:#thresholds[i, j]:
-            xor_result = np.bitwise_xor(x[i, :], x[j, :])
-            results.append(xor_result)
-
-    return np.vstack(results)# if results else np.array(results, dtype=x.dtype)
+    return np.vstack([np.logical_xor(x[i, :], x[j, :]) for i, j in itertools.combinations(range(n), 2) if y[i] - y[j]])# if results else np.array(results, dtype=x.dtype)
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
