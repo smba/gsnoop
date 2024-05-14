@@ -9,13 +9,13 @@ import time
 np.random.seed(14)
 
 # Define the size of the problem space
-n_features = 10
-n_configs = 700
+n_features = 100
+n_configs = 50
 
 # Define a simple performance function to simulate system behavior
 # The function models the performance of a system given a configuration of features
 def performance_oracle(x):
-    return x[0] * x[1] * 123 + x[3] * 45 + x[4] * 67 + 0.0001#+ np.random.normal(0, 0.5)
+    return x[0] * x[1] * 123 + x[3] * 45 + x[40] * 67 + 0.0001#+ np.random.normal(0, 0.5)
 
 # Generate random configurations and evaluate performance using the defined oracle
 x = np.random.choice(2, size=(n_configs, n_features))
@@ -31,13 +31,9 @@ x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 group_options = group_screening(x_diff_transformed, y_diff_transformed)
 print("Group Screening Results:", group_options)
 print(group_options)
-# Perform causal analysis using the XOR transformation
-#x_xor_transformed = xor_transform(x, y, k = 1e-13)
-#causal_options = find_hitting_set(x_xor_transformed)
-#print("MHS solving  using PuLP:", causal_options)
 
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
-x_xor_transformed = np.vstack([x[i] for i in range(x_xor_transformed.shape[0]) if y[i] != 0])
+x_xor_transformed = np.vstack([x_xor_transformed[i,:] for i in range(x_xor_transformed.shape[0]) if y_xor_transformed[i] != 0])
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("MHS solving using Hochbaum's Approximation", causal_options)
 print(causal_options)
