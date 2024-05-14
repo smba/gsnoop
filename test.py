@@ -9,7 +9,7 @@ import time
 np.random.seed(1)
 
 # Define the size of the problem space
-n_features = 150
+n_features = 35
 n_configs = 150
 
 # Define a simple performance function to simulate system behavior

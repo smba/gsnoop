@@ -72,7 +72,7 @@ def xor_transform(x, y, k=0.0):
 
     for i, j in itertools.combinations(range(n), 2):
         if np.abs(y[i] - y[j]) > 0:#thresholds[i, j]:
-            xor_result = np.bitwise_xor(x[:, i], x[:, j])
+            xor_result = np.bitwise_xor(x[i, :], x[j, :])
             results.append(xor_result)
 
     return np.vstack(results) if results else np.array(results, dtype=x.dtype)
