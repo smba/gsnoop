@@ -51,7 +51,7 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
     return x_, y_
 
-def xor_transform(x, y, k=0.0):
+def xor_transform(x, y, k=0.00):
     """
     Perform a bitwise XOR transformation on rows of the matrix 'x' based on a dynamic threshold
     derived from the differences in 'y'.
@@ -65,13 +65,22 @@ def xor_transform(x, y, k=0.0):
         numpy.ndarray: A matrix containing the result of the XOR operation for row pairs
                        that meet the threshold condition.
     """
-    n = x.shape[1]
-    return np.vstack([np.logical_xor(x[i, :], x[j, :]) for i, j in itertools.combinations(range(n), 2) if y[i] - y[j]])# if results else np.array(results, dtype=x.dtype)
+    n = x.shape[0]
+    results = []
+    # Precompute the thresholds for all pairs to avoid recalculating in the loop
+    thresholds = np.array([[k * max(y[i], y[j]) for j in range(n)] for i in range(n)])
+
+    for i, j in itertools.combinations(range(n), 2):
+        if np.abs(y[i] - y[j]) > thresholds[i, j]:
+            xor_result = np.bitwise_xor(x[i, :], x[j, :])
+            results.append(xor_result)
+
+    return np.vstack(results) if results else np.array(results, dtype=x.dtype)
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
     """
-    Calculate the precision metric..
+    Calculate the precision metric.
 
     Args:
         y_true (List[int]): List of true labels.
