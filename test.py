@@ -23,21 +23,20 @@ y = np.array(list(map(performance_oracle, x)))
 
 # Conduct baseline screening using LASSO
 lasso_options = lasso_screening(x, y)
-print(type(lasso_options))
+print(lasso_options)
 print("Lasso Screening Results:", lasso_options)
 
 # Perform group screening using the difference transformation
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 group_options = group_screening(x_diff_transformed, y_diff_transformed)
 print("Group Screening Results:", group_options)
-print(type(group_options))
+print(group_options)
 # Perform causal analysis using the XOR transformation
-x_xor_transformed, y_xor_transformed = xor_transform(x, y)
+x_xor_transformed = xor_transform(x, y, threshold = 1e-13)
+causal_options = find_hitting_set(x_xor_transformed, y_xor_transformed)
+print("MHS solving  using PuLP:", causal_options)
 
-
-#causal_options = find_hitting_set(x_xor_transformed, y_xor_transformed)
-#print("MHS solving  using PuLP:", causal_options)
-
-causal_options = find_greedy_hitting_set(x_xor_transformed, y_xor_transformed, 0.0)
+x_xor_transformed = xor_transform(x, y, threshold = 0.05)
+causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("MHS solving using Hochbaum's Approximation", causal_options)
-print(type(causal_options))
+print(causal_options)

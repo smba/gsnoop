@@ -6,7 +6,7 @@ import numpy as np
 from typing import List, Set, Dict
 
 # Function to solve a hitting set problem instance
-def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
+def find_hitting_set(x: List[np.ndarray]) -> List[int]:
     """
     Finds a minimal hitting set for the given sets using PuLP.
 
@@ -18,7 +18,7 @@ def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
         A list representing the minimal hitting set.
     """
     # Build constraints from the input data based on the target values
-    sets_to_hit = [set(np.where(row == 1)[0]) for row, target in zip(x, y) if target > 0.1]
+    sets_to_hit = [set(np.where(row == 1)[0]) for row in x]
 
     # Create the universe of elements
     universe = set.union(*sets_to_hit)
@@ -46,7 +46,7 @@ def find_hitting_set(x: List[np.ndarray], y: List[float]) -> List[int]:
 
 
 
-def find_greedy_hitting_set(x: List[np.ndarray], y: List[float], threshold: float) -> Set[int]:
+def find_greedy_hitting_set(x: List[np.ndarray]) -> Set[int]:
     """
     Implements Hochbaum's greedy approximation algorithm for the hitting set problem.
 
@@ -60,7 +60,7 @@ def find_greedy_hitting_set(x: List[np.ndarray], y: List[float], threshold: floa
                   with this hitting set.
     """
 
-    Set = [set(np.where(row == 1)[0]) for row, target in zip(x, y) if target > threshold]
+    Set = [set(np.where(row == 1)[0]) for row in x]
 
     # Initialize the hitting set as empty
     hitting_set: Set[int] = set()

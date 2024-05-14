@@ -51,44 +51,31 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
     return x_, y_
 
-def xor_transform_x(x: np.ndarray) -> np.ndarray:
+def xor_transform(x, y, k=0.0):
     """
-    Calculate pairwise differences between rows of the input array x.
+    Perform a bitwise XOR transformation on rows of the matrix 'x' based on a dynamic threshold
+    derived from the differences in 'y'.
 
-    Args:
-        x (np.ndarray): Input 2D array.
+    Parameters:
+        x (numpy.ndarray): Input matrix where each row is a data vector.
+        y (numpy.ndarray): Array of measurements associated with each row of 'x'.
+        k (float): Proportional factor for setting the threshold.
 
     Returns:
-        np.ndarray: Array containing pairwise differences.
+        numpy.ndarray: A matrix containing the result of the XOR operation for row pairs
+                       that meet the threshold condition.
     """
-    return np.vstack([
-        np.bitwise_xor(x[i, :], x[j, :])
-        for i, j in itertools.combinations(range(x.shape[0]), 2)
-    ])
+    n = x.shape[1]
+    results = []
+    # Precompute the thresholds for all pairs to avoid recalculating in the loop
+    thresholds = np.array([[k * max(y[i], y[j]) for j in range(n)] for i in range(n)])
 
-def xor_transform_y(y: np.ndarray) -> np.ndarray:
-    """
-    Calculate pairwise differences between elements of the input array y.
+    for i, j in itertools.combinations(range(n), 2):
+        if np.abs(y[i] - y[j]) > thresholds[i, j]:
+            xor_result = np.bitwise_xor(x[:, i], x[:, j])
+            results.append(xor_result)
 
-    Args:
-        y (np.ndarray): Input 1D array.
-
-    Returns:
-        np.ndarray: Array containing pairwise differences.
-    """
-    return np.abs(diff_transform_y(y))
-
-def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Compute pairwise XOR operations between rows of the input array x.
-
-    Args:
-        x (np.ndarray): Input 2D array.
-
-    Returns:
-        Tuple[np.ndarray, np.ndarray]: Transformed feature and target arrays.
-    """
-    return (xor_transform_x(x), xor_transform_y(y))
+    return np.vstack(results) if results else np.array(results, dtype=x.dtype)
 
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
@@ -146,3 +133,42 @@ def f1(y_true: List[int], y_pred: List[int]) -> float:
     """
     p, r = precision(y_true, y_pred), recall(y_true, y_pred)
     return (2 * p * r) / max(1, (p + r))
+
+def add_proportional_noise(measurements, noise_mean=0, noise_std_percent=0.05):
+    """
+    Add proportional Gaussian noise to a vector of measurements.
+
+    Parameters:
+        measurements (np.array): Original vector of measurements.
+        noise_mean (float): Mean of the Gaussian noise.
+        noise_std_percent (float): Standard deviation of the noise as a percentage of the measurement values.
+
+    Returns:
+        np.array: Vector of measurements with added noise.
+    """
+    # Calculate the standard deviation for each element
+    std_devs = noise_std_percent * measurements
+    
+    # Generate Gaussian noise for each measurement
+    noise = np.random.normal(loc=noise_mean, scale=std_devs)
+    
+    # Add the noise to the original measurements
+    noisy_measurements = measurements + noise
+    
+    return noisy_measurements
+
+def determine_threshold(value1, value2, k=0.05):
+    """
+    Determine a dynamic threshold based on the higher of two values.
+    
+    Parameters:
+        value1 (float): First measurement.
+        value2 (float): Second measurement.
+        k (float): Proportional factor for setting the threshold.
+    
+    Returns:
+        float: Calculated threshold.
+    """
+    base_value = max(value1, value2)
+    return k * base_value
+
