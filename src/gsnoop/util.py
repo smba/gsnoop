@@ -80,7 +80,7 @@ def xor_transform(x, y, k=0.0):
 
 def precision(y_true: List[int], y_pred: List[int]) -> float:
     """
-    Calculate the precision metric.
+    Calculate the precision metric..
 
     Args:
         y_true (List[int]): List of true labels.
