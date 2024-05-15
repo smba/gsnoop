@@ -1,5 +1,6 @@
 # A Framework for Group-based Screening
-![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg) ![with-coffee](https://img.shields.io/badge/made%20with-%E2%98%95%EF%B8%8F%20coffee-yellow.svg)
+![Run Tests](https://github.com/smba/gsnoop/actions/workflows/test.yml/badge.svg) [![codecov](https://codecov.io/gh/smba/gsnoop/branch/main/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/smba/gsnoop)
+ ![with-coffee](https://img.shields.io/badge/made%20with-%E2%98%95%EF%B8%8F%20coffee-yellow.svg)
 
 A framework for testing group-based screening strategies for _feature selection_ or _dimensionality reduction_ of large parameter spaces. The methods provided aim at identifying input features (e.g., software configuration options) associated with variation in a dependent variable (e.g., software performance). To elicit variation due to higher-order interactions (effects due to combinations of parameters), we analyze the difference of each pair of observations instead of the training set of obeservations directly. We provide two realizations of group-based screening, a step-wise _variance decomposition_, and a _solving-approach_, conceiving feature selection as the minimal hitting set problem. 
 
