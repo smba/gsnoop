@@ -51,6 +51,11 @@ x_xor_transformed = np.vstack(
         if y_xor_transformed[i] != 0
     ]
 )
+
+print("> ", "Running Discrete Optimization for MHS...")
+causal_options = find_hitting_set(x_xor_transformed)
+print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
+
 print("> ", "Running Hochbaum's MHS Approximation...")
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
