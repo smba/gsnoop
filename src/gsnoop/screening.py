@@ -122,6 +122,47 @@ def lasso_screening(
 def group_screening(
     x: np.ndarray,
     y: np.ndarray,
+) -> List[int]:
+    """
+    Identifies important features from group space.
+
+    Parameters:
+    - x (np.ndarray): Feature matrix.
+    - y (np.ndarray): Target vector.
+    - r2_threshold (float): Minimum R² score threshold to stop the feature selection.
+
+    Returns:
+    - List[int]: Indices of the most important features in descending order.
+    """
+    # Determine the smallest alpha value that results in zero features being selected
+    alpha_limit = find_alpha_limit(x, y)
+
+    # Generate random alphas for hyperparameter optimization
+    alphas = alpha_limit * np.random.random(size=n_simulations)
+
+    # Train models using these alphas and count non-zero coefficients
+    models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
+    counts = np.array([np.sum(m.coef_ != 0) for m in models])
+
+    # Stack coefficients and calculate feature rankings
+    coefs = np.vstack([m.coef_ for m in models])
+    coef_sums = np.sum(np.abs(coefs), axis=0)
+    ranking = np.argsort(coef_sums)[::-1]
+
+    # Find the "best" alpha: one with the least sensitive count
+    mean_count = np.mean(counts)
+    count_diff = np.abs(counts - mean_count)
+    best_alpha_idx = np.argmin(count_diff)
+
+    # Compute used features for the "best" alpha
+    best_features = np.where(models[best_alpha_idx].coef_ != 0)[0]
+    best_features_sorted = sorted(best_features)
+
+    return list(ranking[:int(mean_count)])
+
+def stepwise_screening(
+    x: np.ndarray,
+    y: np.ndarray,
     r2_threshold: float = 0.2
 ) -> List[int]:
     """
