@@ -122,6 +122,7 @@ def lasso_screening(
 def group_screening(
     x: np.ndarray,
     y: np.ndarray,
+	n_simulations: int = 100
 ) -> List[int]:
     """
     Identifies important features from group space.

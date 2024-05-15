@@ -1,7 +1,7 @@
 # Import required libraries and modules
 import numpy as np
 from gsnoop.util import diff_transform, xor_transform
-from gsnoop.screening import group_screening, lasso_screening
+from gsnoop.screening import group_screening, lasso_screening, stepwise_screening
 from gsnoop.causal import find_hitting_set, find_greedy_hitting_set
 import time
 
@@ -23,18 +23,20 @@ y = np.array(list(map(performance_oracle, x)))
 
 # Conduct baseline screening using LASSO
 lasso_options = lasso_screening(x, y)
-print(lasso_options)
 print("Lasso Screening Results:", lasso_options)
 
 # Perform group screening using the difference transformation
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 group_options = group_screening(x_diff_transformed, y_diff_transformed)
 print("Group Screening Results:", group_options)
-print(group_options)
+
+# Perform group screening using the difference transformation
+x_diff_transformed, y_diff_transformed = diff_transform(x, y)
+stepwise_options = stepwise_screening(x_diff_transformed, y_diff_transformed)
+print("Stepwise Screening Results:", group_options)
 
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
 x_xor_transformed = np.vstack([x_xor_transformed[i,:] for i in range(x_xor_transformed.shape[0]) if y_xor_transformed[i] != 0])
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("MHS solving using Hochbaum's Approximation", causal_options)
-print(causal_options)
 
