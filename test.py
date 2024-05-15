@@ -17,7 +17,7 @@ n_configs = 30
 # The function models the performance of a system given a configuration of features
 def performance_oracle(x):
     return (
-        x[0] * x[1] * 123 + x[3] * 45 + x[40] * 67 + 0.0001
+        x[0] * x[1] * 123 + x[2] * 45 + x[3] * 67 + 0.0001
     )  # + np.random.normal(0, 0.5)
 
 
