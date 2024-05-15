@@ -5,6 +5,7 @@ import pulp
 import numpy as np
 from typing import List, Set, Dict
 
+
 # Function to solve a hitting set problem instance
 def find_hitting_set(x: List[np.ndarray]) -> List[int]:
     """
@@ -43,7 +44,6 @@ def find_hitting_set(x: List[np.ndarray]) -> List[int]:
     result = [element for element, var in variables.items() if var.value() > 0.5]
 
     return result
-
 
 
 def find_greedy_hitting_set(x: List[np.ndarray]) -> Set[int]:
@@ -86,6 +86,6 @@ def find_greedy_hitting_set(x: List[np.ndarray]) -> Set[int]:
 
     return list(hitting_set)
 
-if __name__ == '__main__':
-    pass
 
+if __name__ == "__main__":
+    pass

@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from typing import Tuple, List
 
+
 def diff_transform_x(x: np.ndarray) -> np.ndarray:
     """
     Calculate pairwise differences between rows of the input array x.
@@ -16,7 +17,9 @@ def diff_transform_x(x: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    return np.vstack([x[i, :] - x[j, :] for i, j in itertools.combinations(range(x.shape[0]), 2)])
+    return np.vstack(
+        [x[i, :] - x[j, :] for i, j in itertools.combinations(range(x.shape[0]), 2)]
+    )
 
 
 def diff_transform_y(y: np.ndarray) -> np.ndarray:
@@ -29,10 +32,14 @@ def diff_transform_y(y: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    return np.array([y[i] - y[j] for i, j in itertools.combinations(range(y.shape[0]), 2)])
+    return np.array(
+        [y[i] - y[j] for i, j in itertools.combinations(range(y.shape[0]), 2)]
+    )
 
 
-def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) -> Tuple[np.ndarray, np.ndarray]:
+def diff_transform(
+    x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Transform both feature and target arrays using pairwise differences.
 
@@ -51,6 +58,7 @@ def diff_transform(x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None) 
     y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
     return x_, y_
 
+
 def xor_transform_x(x: np.ndarray) -> np.ndarray:
     """
     Calculate pairwise differences between rows of the input array x.
@@ -61,10 +69,13 @@ def xor_transform_x(x: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    return np.vstack([
-        np.bitwise_xor(x[i, :], x[j, :])
-        for i, j in itertools.combinations(range(x.shape[0]), 2)
-    ])
+    return np.vstack(
+        [
+            np.bitwise_xor(x[i, :], x[j, :])
+            for i, j in itertools.combinations(range(x.shape[0]), 2)
+        ]
+    )
+
 
 def xor_transform_y(y: np.ndarray) -> np.ndarray:
     """
@@ -77,6 +88,7 @@ def xor_transform_y(y: np.ndarray) -> np.ndarray:
         np.ndarray: Array containing pairwise differences.
     """
     return np.abs(diff_transform_y(y))
+
 
 def xor_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -147,6 +159,7 @@ def f1(y_true: List[int], y_pred: List[int]) -> float:
     p, r = precision(y_true, y_pred), recall(y_true, y_pred)
     return (2 * p * r) / max(1, (p + r))
 
+
 def add_proportional_noise(measurements, noise_mean=0, noise_std_percent=0.05):
     """
     Add proportional Gaussian noise to a vector of measurements.
@@ -161,27 +174,27 @@ def add_proportional_noise(measurements, noise_mean=0, noise_std_percent=0.05):
     """
     # Calculate the standard deviation for each element
     std_devs = noise_std_percent * measurements
-    
+
     # Generate Gaussian noise for each measurement
     noise = np.random.normal(loc=noise_mean, scale=std_devs)
-    
+
     # Add the noise to the original measurements
     noisy_measurements = measurements + noise
-    
+
     return noisy_measurements
+
 
 def determine_threshold(value1, value2, k=0.05):
     """
     Determine a dynamic threshold based on the higher of two values.
-    
+
     Parameters:
         value1 (float): First measurement.
         value2 (float): Second measurement.
         k (float): Proportional factor for setting the threshold.
-    
+
     Returns:
         float: Calculated threshold.
     """
     base_value = max(value1, value2)
     return k * base_value
-

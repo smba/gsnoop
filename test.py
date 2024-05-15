@@ -12,10 +12,14 @@ np.random.seed(14)
 n_features = 100
 n_configs = 50
 
+
 # Define a simple performance function to simulate system behavior
 # The function models the performance of a system given a configuration of features
 def performance_oracle(x):
-    return x[0] * x[1] * 123 + x[3] * 45 + x[40] * 67 + 0.0001#+ np.random.normal(0, 0.5)
+    return (
+        x[0] * x[1] * 123 + x[3] * 45 + x[40] * 67 + 0.0001
+    )  # + np.random.normal(0, 0.5)
+
 
 # Generate random configurations and evaluate performance using the defined oracle
 x = np.random.choice(2, size=(n_configs, n_features))
@@ -40,8 +44,13 @@ print("> ", f"Selected {len(stepwise_options)} of {n_features} features.\n")
 
 
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
-x_xor_transformed = np.vstack([x_xor_transformed[i,:] for i in range(x_xor_transformed.shape[0]) if y_xor_transformed[i] != 0])
+x_xor_transformed = np.vstack(
+    [
+        x_xor_transformed[i, :]
+        for i in range(x_xor_transformed.shape[0])
+        if y_xor_transformed[i] != 0
+    ]
+)
 print("> ", "Running Hochbaum's MHS Approximation...")
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
-

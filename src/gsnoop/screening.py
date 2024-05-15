@@ -7,6 +7,7 @@ from joblib import Parallel, delayed
 from typing import List
 from sklearn.linear_model import SGDRegressor
 
+
 def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     """
     Fits an L1-regularized (Lasso) model to the data and returns the trained model.
@@ -23,11 +24,9 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     model.fit(x, y)
     return model
 
+
 def find_alpha_limit(
-    x: np.ndarray,
-    y: np.ndarray,
-    screening_split: int = 5,
-    tolerance: float = 1e-5
+    x: np.ndarray, y: np.ndarray, screening_split: int = 5, tolerance: float = 1e-5
 ) -> float:
     """
     Identifies the smallest alpha value that results in zero features being selected.
@@ -49,15 +48,17 @@ def find_alpha_limit(
         screening_alphas = np.linspace(lower_alpha, upper_alpha, screening_split)
 
         # Fit models for each alpha value
-        models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in screening_alphas)
+        models = Parallel(n_jobs=-1)(
+            delayed(fit_lasso_model)(a, x, y) for a in screening_alphas
+        )
 
         # Count non-zero coefficients for each model
         counts = [np.sum(m.coef_ != 0) for m in models]
 
         stepsize = np.abs(screening_alphas[0] - screening_alphas[1])
-        
+
         if all(counts):
-            upper_alpha *= (1 + 0.1)
+            upper_alpha *= 1 + 0.1
 
         # sweet spot
         elif any(counts) and not all(counts):
@@ -77,9 +78,7 @@ def find_alpha_limit(
 
 
 def lasso_screening(
-    x: np.ndarray,
-    y: np.ndarray,
-    n_simulations: int = 100
+    x: np.ndarray, y: np.ndarray, n_simulations: int = 100
 ) -> List[int]:
     """
     Performs feature screening using a stepwise Lasso approach with SGDRegressor.
@@ -117,12 +116,11 @@ def lasso_screening(
     best_features = np.where(models[best_alpha_idx].coef_ != 0)[0]
     best_features_sorted = sorted(best_features)
 
-    return list(ranking[:int(mean_count)])
+    return list(ranking[: int(mean_count)])
+
 
 def group_screening(
-    x: np.ndarray,
-    y: np.ndarray,
-	n_simulations: int = 100
+    x: np.ndarray, y: np.ndarray, n_simulations: int = 100
 ) -> List[int]:
     """
     Identifies important features from group space.
@@ -159,12 +157,11 @@ def group_screening(
     best_features = np.where(models[best_alpha_idx].coef_ != 0)[0]
     best_features_sorted = sorted(best_features)
 
-    return list(ranking[:int(mean_count)])
+    return list(ranking[: int(mean_count)])
+
 
 def stepwise_screening(
-    x: np.ndarray,
-    y: np.ndarray,
-    r2_threshold: float = 0.2
+    x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.2
 ) -> List[int]:
     """
     Identifies important features stepwise until the R² score drops below the threshold.
@@ -205,5 +202,6 @@ def stepwise_screening(
 
     return list(options)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pass
