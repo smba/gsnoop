@@ -31,9 +31,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install requirements
+      - name: Install requirements and coverage tool
         run: |
           pip install -r requirements.txt
+          pip install coverage
 
       - name: Install package
         run: pip install -e .
@@ -41,5 +42,19 @@ jobs:
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/src" >> $GITHUB_ENV
 
-      - name: Run Tests
-        run: python test.py
+      - name: Run Tests with Coverage
+        run: |
+          coverage run test.py
+
+      - name: Generate Coverage Report
+        run: |
+          coverage report
+          coverage xml  # Necessary for some tools like Codecov
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: true
+
