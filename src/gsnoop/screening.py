@@ -20,7 +20,7 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     Returns:
     - SGDRegressor: The fitted model.
     """
-    model = SGDRegressor(penalty='l1', alpha=alpha, random_state=1, max_iter=5000)
+    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=1, max_iter=5000)
     model.fit(x, y)
     return model
 
@@ -76,6 +76,7 @@ def find_alpha_limit(
         else:
             lower_alpha = max(lower_alpha * (1 - 0.1), 0)
 
+
 # TODO re-implement! should yield same results...
 def stable_screening(
     x: np.ndarray, y: np.ndarray, n_simulations: int = 100
@@ -94,7 +95,7 @@ def stable_screening(
 
     # Determine the smallest alpha value that results in zero features being selected
     alpha_limit = find_alpha_limit(x, y)
-	print(alpha_limit)
+    print(alpha_limit)
     # Generate random alphas for hyperparameter optimization
     alphas = alpha_limit * np.random.random(size=n_simulations)
 
@@ -118,6 +119,7 @@ def stable_screening(
 
     return list(ranking[: int(mean_count)])
 
+
 # TODO initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
     x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.2
@@ -138,7 +140,9 @@ def stepwise_screening(
 
     while score >= r2_threshold:
         # Train linear model using stochastic gradient descent
-        model = SGDRegressor(penalty=None, random_state=42) # TODO hyperparameter optimization?
+        model = SGDRegressor(
+            penalty=None, random_state=42
+        )  # TODO hyperparameter optimization?
         model.fit(x, y)
 
         # Get feature importance coefficients and rank features
