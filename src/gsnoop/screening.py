@@ -7,10 +7,12 @@ from joblib import Parallel, delayed
 from typing import List
 from sklearn.linear_model import SGDRegressor, Lasso
 
+from sklearn.experimental import enable_halving_search_cv 
+from sklearn.model_selection import HalvingGridSearchCV
 
 def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     """
-    Fits an L1-regularized (Lasso) model to the data and returns the trained model.
+    Fits an L1-regularized (SGDRegressor) model to the data and returns the trained model.
 
     Parameters:
     - alpha (float): Regularization parameter.
@@ -77,12 +79,36 @@ def find_alpha_limit(
             lower_alpha = max(lower_alpha * (1 - 0.1), 0)
 
 
-# TODO re-implement! should yield same results...
+def baseline_screening(
+    x: np.ndarray, y: np.ndarray, n_simulations: int = 100
+) -> List[int]:
+    """
+    Performs feature screening using Lasso Regression (using SGDRegressor).
+
+    Parameters:
+    - x (np.ndarray): Feature matrix.
+    - y (np.ndarray): Target vector.
+    - n_simulations (int): Number of simulations for hyperparameter optimization.
+
+    Returns:
+    - List[int]: Ranked list of most important feature indices.
+    """
+		params = ParameterGrid({
+			'alpha' np.linspace(0, 10, 1000),
+		}
+		search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+		search.fit(x, y)	
+
+		model = search.best_estimator_
+		return list(sorted(np.where(model.coef_ != 0)[0]))
+    
+
+    return list(ranking[: int(mean_count)])
+
 def stable_screening(
     x: np.ndarray, y: np.ndarray, n_simulations: int = 100
 ) -> List[int]:
     """
-    Performs feature screening using a stepwise Lasso approach with SGDRegressor.
 
     Parameters:
     - x (np.ndarray): Feature matrix.
@@ -104,26 +130,22 @@ def stable_screening(
     models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
     counts = np.array([np.sum(m.coef_ != 0) for m in models])
 
-    # Stack coefficients and calculate feature rankings
-    coefs = np.vstack([m.coef_ for m in models])
-    coef_sums = np.sum(np.abs(coefs), axis=0)
-    ranking = np.argsort(coef_sums)[::-1]
+    # TODO add logic here
+	unique, counts = numpy.unique(counts, return_counts=True)
+	frequencies =  dict(zip(unique, counts))	
+	most_stable_size  = max(frequencies, key=frequencies.get)
 
-    # Find the "best" alpha: one with the least sensitive count
-    mean_count = np.mean(counts)
-    count_diff = np.abs(counts - mean_count)
-    best_alpha_idx = np.argmin(count_diff)
+	# get one of those models
+	idx = counts.index(most_stable_size)
+	model = models[idx]
+	options = np.where(model.coef_ != 0)[0]
 
-    # Compute used features for the "best" alpha
-    best_features = np.where(models[best_alpha_idx].coef_ != 0)[0]
-    best_features_sorted = sorted(best_features)
-
-    return list(ranking[: int(mean_count)])
+    return list(sorted(options))
 
 
-# TODO initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
+#  initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
-    x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.2
+    x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.5
 ) -> List[int]:
     """
     Identifies important features stepwise until the R² score drops below the threshold.
@@ -136,15 +158,20 @@ def stepwise_screening(
     Returns:
     - List[int]: Indices of the most important features in descending order.
     """
+
+	params = ParameterGrid({
+		'alpha' np.linspace(0, 10, 1000),
+	}
+
     options = []  # Stores indices of the most important features
     score = 1.0  # Initialize with a high score for the first iterationW
 
     while score >= r2_threshold:
-        # Train linear model using stochastic gradient descent
-        model = SGDRegressor(
-            penalty=None, random_state=42
-        )  # TODO hyperparameter optimization?
-        model.fit(x, y)
+
+        # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
+		search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+		search.fit(x, y)	
+		model = search.best_estimator_
 
         # Get feature importance coefficients and rank features
         coefs = model.coef_
