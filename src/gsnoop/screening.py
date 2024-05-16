@@ -20,7 +20,7 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> Lasso:
     Returns:
     - SGDRegressor: The fitted model.
     """
-    model = SGDLassoRegressor(alpha=alpha, random_state=42, max_iter=5000)
+    model = Lasso(alpha=alpha, random_state=42, max_iter=5000)
     model.fit(x, y)
     return model
 
