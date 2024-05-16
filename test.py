@@ -4,7 +4,7 @@ warnings.filterwarnings('ignore')
 # Import required libraries and modules
 import numpy as np
 from gsnoop.util import diff_transform, xor_transform
-from gsnoop.screening import stable_screening, stepwise_screening
+from gsnoop.screening import baseline_screening, stepwise_screening
 from gsnoop.causal import find_hitting_set, find_greedy_hitting_set
 import time
 

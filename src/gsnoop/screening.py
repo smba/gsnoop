@@ -93,14 +93,14 @@ def baseline_screening(
     Returns:
     - List[int]: Ranked list of most important feature indices.
     """
-		params = ParameterGrid({
-			'alpha' np.linspace(0, 10, 1000),
-		}
-		search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
-		search.fit(x, y)	
+        params = ParameterGrid({
+            'alpha' np.linspace(0, 10, 1000),
+        }
+        search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+        search.fit(x, y)    
 
-		model = search.best_estimator_
-		return list(sorted(np.where(model.coef_ != 0)[0]))
+        model = search.best_estimator_
+        return list(sorted(np.where(model.coef_ != 0)[0]))
     
 
     return list(ranking[: int(mean_count)])
@@ -131,14 +131,14 @@ def stable_screening(
     counts = np.array([np.sum(m.coef_ != 0) for m in models])
 
     # TODO add logic here
-	unique, counts = numpy.unique(counts, return_counts=True)
-	frequencies =  dict(zip(unique, counts))	
-	most_stable_size  = max(frequencies, key=frequencies.get)
+    unique, counts = numpy.unique(counts, return_counts=True)
+    frequencies =  dict(zip(unique, counts))    
+    most_stable_size  = max(frequencies, key=frequencies.get)
 
-	# get one of those models
-	idx = counts.index(most_stable_size)
-	model = models[idx]
-	options = np.where(model.coef_ != 0)[0]
+    # get one of those models
+    idx = counts.index(most_stable_size)
+    model = models[idx]
+    options = np.where(model.coef_ != 0)[0]
 
     return list(sorted(options))
 
@@ -159,9 +159,9 @@ def stepwise_screening(
     - List[int]: Indices of the most important features in descending order.
     """
 
-	params = ParameterGrid({
-		'alpha' np.linspace(0, 10, 1000),
-	}
+    params = ParameterGrid({
+        'alpha' np.linspace(0, 10, 1000),
+    }
 
     options = []  # Stores indices of the most important features
     score = 1.0  # Initialize with a high score for the first iterationW
@@ -169,9 +169,9 @@ def stepwise_screening(
     while score >= r2_threshold:
 
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
-		search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
-		search.fit(x, y)	
-		model = search.best_estimator_
+        search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+        search.fit(x, y)    
+        model = search.best_estimator_
 
         # Get feature importance coefficients and rank features
         coefs = model.coef_
