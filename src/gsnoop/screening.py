@@ -94,7 +94,7 @@ def stable_screening(
 
     # Determine the smallest alpha value that results in zero features being selected
     alpha_limit = find_alpha_limit(x, y)
-
+	print(alpha_limit)
     # Generate random alphas for hyperparameter optimization
     alphas = alpha_limit * np.random.random(size=n_simulations)
 
@@ -118,7 +118,7 @@ def stable_screening(
 
     return list(ranking[: int(mean_count)])
 
-# TODO initialize with a different r2 threshold, e.g., 0.5 and 0.8
+# TODO initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
     x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.2
 ) -> List[int]:

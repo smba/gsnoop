@@ -4,7 +4,7 @@ warnings.filterwarnings('ignore')
 # Import required libraries and modules
 import numpy as np
 from gsnoop.util import diff_transform, xor_transform
-from gsnoop.screening import group_screening, lasso_screening, stepwise_screening
+from gsnoop.screening import stable_screening, stepwise_screening
 from gsnoop.causal import find_hitting_set, find_greedy_hitting_set
 import time
 
@@ -12,8 +12,8 @@ import time
 np.random.seed(14)
 
 # Define the size of the problem space
-n_features = 250
-n_configs = 360
+n_features = 150
+n_configs = 100
 
 
 # Define a simple performance function to simulate system behavior
@@ -31,21 +31,21 @@ x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 
 # Conduct baseline screening using LASSO
 print("> ", "Running Lasso Screening...")
-lasso_options = group_screening(x, y)
+lasso_options = stable_screening(x, y)
 print("> ", f"Selected {len(lasso_options)} of {n_features} features.")
 print(sorted(lasso_options))
 
 # Perform group screening using the difference transformation
 #x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 print("> ", "Running Group Screening...")
-group_options = group_screening(x_diff_transformed, y_diff_transformed)
+group_options = stable_screening(x_diff_transformed, y_diff_transformed)
 print("> ", f"Selected {len(group_options)} of {n_features} features.")
 print(sorted(group_options))
 
 # Perform group screening using the difference transformation
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 print("> ", "Running Stepwise Screening...")
-stepwise_options = stepwise_screening(x_diff_transformed, y_diff_transformed, 0.9)
+stepwise_options = stepwise_screening(x_diff_transformed, y_diff_transformed, 0.95)
 print("> ", f"Selected {len(stepwise_options)} of {n_features} features.")
 print(sorted(stepwise_options))
 
