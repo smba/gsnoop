@@ -95,7 +95,7 @@ def stable_screening(
 
     # Determine the smallest alpha value that results in zero features being selected
     alpha_limit = find_alpha_limit(x, y)
-    print(alpha_limit)
+    print(alpha_limit, 2)
     # Generate random alphas for hyperparameter optimization
     alphas = alpha_limit * np.random.random(size=n_simulations)
 
