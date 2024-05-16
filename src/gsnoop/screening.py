@@ -163,8 +163,7 @@ def stepwise_screening(
     score = 1.0  # Initialize with a high score for the first iterationW
 
     while score >= r2_threshold:
-        print(score)
-        
+
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
         search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
         search.fit(x, y)    
