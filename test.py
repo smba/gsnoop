@@ -13,7 +13,7 @@ np.random.seed(14)
 
 # Define the size of the problem space
 n_features = 150
-n_configs = 100
+n_configs = 50
 
 
 # Define a simple performance function to simulate system behavior
@@ -64,7 +64,7 @@ x_xor_transformed = np.vstack(
 
 print("> ", "Running Hochbaum's MHS Approximation...")
 causal_options = find_greedy_hitting_set(x_xor_transformed)
-print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
+print("> ", f"Selected {len(causal_options)} of {n_features} features.")
 print(sorted(causal_options))
 
 
