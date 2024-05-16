@@ -30,18 +30,18 @@ y = np.array(list(map(performance_oracle, x)))
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 
 # Conduct baseline screening using LASSO
+print('baseline')
 print(baseline_screening(x, y))
 print(baseline_screening(x_diff_transformed, y_diff_transformed))
 
-# Conduct baseline screening using LASSO
-print(baseline_screening(x, y))
-print(baseline_screening(x_diff_transformed, y_diff_transformed))
-
+print('stable')
 print(stable_screening(x, y))
 print(stable_screening(x_diff_transformed, y_diff_transformed))
 
-print(stepwise_screening(x, y, 0.8))
-print(stepwise_screening(x_diff_transformed, y_diff_transformed, 0.8))
+print('stepwise')
+threshold = 0.5
+print(stepwise_screening(x, y, threshold))
+print(stepwise_screening(x_diff_transformed, y_diff_transformed, threshold))
 
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
 x_xor_transformed = np.vstack(
@@ -52,15 +52,7 @@ x_xor_transformed = np.vstack(
     ]
 )
 
-#print("> ", "Running Discrete Optimization for MHS...")
-#causal_options = find_hitting_set(x_xor_transformed)
-#print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
-
-print("> ", "Running Hochbaum's MHS Approximation...")
+print('MHS solving')
 causal_options = find_greedy_hitting_set(x_xor_transformed)
-print("> ", f"Selected {len(causal_options)} of {n_features} features.")
 print(sorted(causal_options))
 
-
-print('--------------------------')
-print(sorted(lasso_options), sorted(group_options))
