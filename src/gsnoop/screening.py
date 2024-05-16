@@ -93,9 +93,9 @@ def baseline_screening(
     Returns:
     - List[int]: Ranked list of most important feature indices.
     """
-    params = ParameterGrid({
+    params = {
         'alpha': np.linspace(0, 10, 1000),
-    })
+    }
     search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
     search.fit(x, y)    
 
@@ -129,7 +129,7 @@ def stable_screening(
     counts = np.array([np.sum(m.coef_ != 0) for m in models])
 
     # TODO add logic here
-    unique, counts = numpy.unique(counts, return_counts=True)
+    unique, counts = np.unique(counts, return_counts=True)
     frequencies =  dict(zip(unique, counts))    
     most_stable_size  = max(frequencies, key=frequencies.get)
 
@@ -157,8 +157,8 @@ def stepwise_screening(
     - List[int]: Indices of the most important features in descending order.
     """
 
-    params = ParameterGrid({
-        'alpha' np.linspace(0, 10, 1000),
+    params = {
+        'alpha': np.linspace(0, 10, 1000),
     }
 
     options = []  # Stores indices of the most important features
