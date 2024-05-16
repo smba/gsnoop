@@ -126,9 +126,10 @@ def stable_screening(
 
     # Train models using these alphas and count non-zero coefficients
     models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
-    counts = np.array([np.sum(m.coef_ != 0) for m in models])
+    counts = np.array([np.sum(m.coef_ != 0) for m in models])		
+		
+		print(counts)
 
-    # TODO add logic here
     unique, counts = np.unique(counts, return_counts=True)
     frequencies =  dict(zip(unique, counts))    
     most_stable_size  = max(frequencies, key=frequencies.get)

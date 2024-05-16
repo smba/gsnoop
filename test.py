@@ -31,14 +31,14 @@ x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 
 # Conduct baseline screening using LASSO
 print("> ", "Running Lasso Screening...")
-lasso_options = stable_screening(x, y)
+lasso_options = baseline_screening(x, y)
 print("> ", f"Selected {len(lasso_options)} of {n_features} features.")
 print(sorted(lasso_options))
 
 # Perform group screening using the difference transformation
 #x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 print("> ", "Running Group Screening...")
-group_options = stable_screening(x_diff_transformed, y_diff_transformed)
+group_options = baseline_screening(x_diff_transformed, y_diff_transformed)
 print("> ", f"Selected {len(group_options)} of {n_features} features.")
 print(sorted(group_options))
 
