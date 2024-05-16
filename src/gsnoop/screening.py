@@ -132,7 +132,7 @@ def stable_screening(
     most_stable_size  = max(frequencies, key=frequencies.get)
 
     # get one of those models
-    idx = np.where(counts == most_stable_size)[0]
+    idx = np.where(counts == most_stable_size)[0][0]
     model = models[idx]
     options = np.where(model.coef_ != 0)[0]
 
