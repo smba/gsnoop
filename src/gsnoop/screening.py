@@ -120,7 +120,6 @@ def stable_screening(
     # Determine the smallest alpha value that results in zero features being selected
     alpha_limit = find_alpha_limit(x, y)
 
-    print(alpha_limit, 2)
     # Generate random alphas for hyperparameter optimization
     alphas = alpha_limit * np.random.random(size=n_simulations)
 
@@ -128,7 +127,7 @@ def stable_screening(
     models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
     counts = np.array([np.sum(m.coef_ != 0) for m in models])		
 		
-		print(counts)
+	print(counts)
 
     unique, counts = np.unique(counts, return_counts=True)
     frequencies =  dict(zip(unique, counts))    
