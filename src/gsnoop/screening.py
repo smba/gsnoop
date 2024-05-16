@@ -5,10 +5,10 @@ import numpy as np
 
 from joblib import Parallel, delayed
 from typing import List
-from sklearn.linear_model import SGDRegressor
+from sklearn.linear_model import SGDRegressor, Lasso
 
 
-def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
+def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> Lasso:
     """
     Fits an L1-regularized (Lasso) model to the data and returns the trained model.
 
@@ -20,7 +20,7 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     Returns:
     - SGDRegressor: The fitted model.
     """
-    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=42, max_iter=5000)
+    model = SGDLassoRegressor(alpha=alpha, random_state=42, max_iter=5000)
     model.fit(x, y)
     return model
 

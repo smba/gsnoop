@@ -9,7 +9,7 @@ import time
 np.random.seed(14)
 
 # Define the size of the problem space
-n_features = 30
+n_features = 90
 n_configs = 30
 
 
@@ -24,24 +24,27 @@ def performance_oracle(x):
 # Generate random configurations and evaluate performance using the defined oracle
 x = np.random.choice(2, size=(n_configs, n_features))
 y = np.array(list(map(performance_oracle, x)))
+x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 
 # Conduct baseline screening using LASSO
 print("> ", "Running Lasso Screening...")
-lasso_options = lasso_screening(x, y)
-print("> ", f"Selected {len(lasso_options)} of {n_features} features.\n")
+lasso_options = group_screening(x_diff_transformed, y_diff_transformed)
+print("> ", f"Selected {len(lasso_options)} of {n_features} features.")
+print(lasso_options)
 
 # Perform group screening using the difference transformation
-x_diff_transformed, y_diff_transformed = diff_transform(x, y)
+#x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 print("> ", "Running Group Screening...")
 group_options = group_screening(x_diff_transformed, y_diff_transformed)
-print("> ", f"Selected {len(group_options)} of {n_features} features.\n")
+print("> ", f"Selected {len(group_options)} of {n_features} features.")
+print(group_options)
 
 # Perform group screening using the difference transformation
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
 print("> ", "Running Stepwise Screening...")
 stepwise_options = stepwise_screening(x_diff_transformed, y_diff_transformed)
-print("> ", f"Selected {len(stepwise_options)} of {n_features} features.\n")
-
+print("> ", f"Selected {len(stepwise_options)} of {n_features} features.")
+print(stepwise_options)
 
 x_xor_transformed, y_xor_transformed = xor_transform(x, y)
 x_xor_transformed = np.vstack(
@@ -52,10 +55,11 @@ x_xor_transformed = np.vstack(
     ]
 )
 
-print("> ", "Running Discrete Optimization for MHS...")
-causal_options = find_hitting_set(x_xor_transformed)
-print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
+#print("> ", "Running Discrete Optimization for MHS...")
+#causal_options = find_hitting_set(x_xor_transformed)
+#print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
 
 print("> ", "Running Hochbaum's MHS Approximation...")
 causal_options = find_greedy_hitting_set(x_xor_transformed)
 print("> ", f"Selected {len(causal_options)} of {n_features} features.\n")
+print(causal_options)
