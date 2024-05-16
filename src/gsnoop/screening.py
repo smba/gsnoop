@@ -93,17 +93,15 @@ def baseline_screening(
     Returns:
     - List[int]: Ranked list of most important feature indices.
     """
-        params = ParameterGrid({
-            'alpha' np.linspace(0, 10, 1000),
-        }
-        search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
-        search.fit(x, y)    
+    params = ParameterGrid({
+        'alpha': np.linspace(0, 10, 1000),
+    })
+    search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+    search.fit(x, y)    
 
-        model = search.best_estimator_
-        return list(sorted(np.where(model.coef_ != 0)[0]))
-    
+    model = search.best_estimator_
+    return list(sorted(np.where(model.coef_ != 0)[0]))
 
-    return list(ranking[: int(mean_count)])
 
 def stable_screening(
     x: np.ndarray, y: np.ndarray, n_simulations: int = 100
