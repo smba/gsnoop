@@ -126,15 +126,13 @@ def stable_screening(
     # Train models using these alphas and count non-zero coefficients
     models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
     counts = np.array([np.sum(m.coef_ != 0) for m in models])        
-        
-    print(counts)
-
+    
     unique, counts = np.unique(counts, return_counts=True)
     frequencies =  dict(zip(unique, counts))    
     most_stable_size  = max(frequencies, key=frequencies.get)
 
     # get one of those models
-    idx = counts.index(most_stable_size)
+    idx = np.where(counts == most_stable_size)[0]
     model = models[idx]
     options = np.where(model.coef_ != 0)[0]
 
@@ -165,7 +163,8 @@ def stepwise_screening(
     score = 1.0  # Initialize with a high score for the first iterationW
 
     while score >= r2_threshold:
-
+        print(score)
+        
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
         search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
         search.fit(x, y)    
