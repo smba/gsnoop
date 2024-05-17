@@ -129,15 +129,18 @@ def stable_screening(
     
     unique, counts = np.unique(counts, return_counts=True)
     frequencies =  dict(zip(unique, counts))    
-    most_stable_size  = max(frequencies, key=frequencies.get)
 
+    most_stable_size  = max(frequencies, key=frequencies.get)
     # get one of those models
-    idx = np.where(counts == most_stable_size)[0][0]
+
+    idx = np.where(unique == most_stable_size)[0][0]
     model = models[idx]
     options = np.where(model.coef_ != 0)[0]
 
     return list(sorted(options))
 
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression, Lasso
 
 #  initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
@@ -163,18 +166,21 @@ def stepwise_screening(
     score = 1.0  # Initialize with a high score for the first iterationW
 
     while score >= r2_threshold:
-
+        
+        #plt.hist(y, bins=40)
+        #plt.show()
+        
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
-        search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+        search = LinearRegression()# HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
         search.fit(x, y)    
-        model = search.best_estimator_
+        model = search#.best_estimator_
 
         # Get feature importance coefficients and rank features
         coefs = model.coef_
         importances = np.argsort(np.abs(coefs))[::-1]
         opt = importances[0]  # Most important feature
-
-        # Calculate the R² score of the model
+        print(np.sum(np.abs(x[:,opt])))
+        # Calculate the R2 score of the model
         score = model.score(x, y)
 
         # Adjust the target values to remove the influence of the most important feature
@@ -186,7 +192,9 @@ def stepwise_screening(
         # Remove the most important feature from consideration in subsequent iterations
         x[:, opt] = 0
         options.append(opt)
-
+        
+        print(np.sum(np.abs(x[:,opt])))
+        
     return list(options)
 
 
