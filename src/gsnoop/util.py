@@ -7,6 +7,10 @@ from sklearn.preprocessing import StandardScaler
 from typing import Tuple, List
 
 
+import numpy as np
+
+
+
 def diff_transform_x(x: np.ndarray) -> np.ndarray:
     """
     Calculate pairwise differences between rows of the input array x.

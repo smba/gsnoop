@@ -8,9 +8,11 @@ from typing import List, Set, Dict
 from sklearn.linear_model import SGDRegressor, Lasso
 
 import pulp
+import itertools
 
-from sklearn.experimental import enable_halving_search_cv 
+from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV
+
 
 def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     """
@@ -96,10 +98,10 @@ def baseline_screening(
     - List[int]: Ranked list of most important feature indices.
     """
     params = {
-        'alpha': np.linspace(0, 10, 1000),
+        "alpha": np.linspace(0, 10, 1000),
     }
-    search = HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
-    search.fit(x, y)    
+    search = HalvingGridSearchCV(SGDRegressor(penalty="l1", max_iter=5000), params)
+    search.fit(x, y)
 
     model = search.best_estimator_
     return list(sorted(np.where(model.coef_ != 0)[0]))
@@ -127,12 +129,12 @@ def stable_screening(
 
     # Train models using these alphas and count non-zero coefficients
     models = Parallel(n_jobs=-1)(delayed(fit_lasso_model)(a, x, y) for a in alphas)
-    counts = np.array([np.sum(m.coef_ != 0) for m in models])        
-    
-    unique, counts = np.unique(counts, return_counts=True)
-    frequencies =  dict(zip(unique, counts))    
+    counts = np.array([np.sum(m.coef_ != 0) for m in models])
 
-    most_stable_size  = max(frequencies, key=frequencies.get)
+    unique, counts = np.unique(counts, return_counts=True)
+    frequencies = dict(zip(unique, counts))
+
+    most_stable_size = max(frequencies, key=frequencies.get)
     # get one of those models
 
     idx = np.where(unique == most_stable_size)[0][0]
@@ -141,8 +143,10 @@ def stable_screening(
 
     return list(sorted(options))
 
+
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression, Lasso
+
 
 #  initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
@@ -160,28 +164,28 @@ def stepwise_screening(
     - List[int]: Indices of the most important features in descending order.
     """
 
-    params = {
-        'alpha': np.linspace(0, 10, 1000),
-    }
+    x = np.copy(x)
 
     options = []  # Stores indices of the most important features
     score = 1.0  # Initialize with a high score for the first iterationW
-
+    params = {'alpha': np.linspace(0, 1, 100)}
     while score >= r2_threshold:
-        
-        #plt.hist(y, bins=40)
-        #plt.show()
-        
+
+        # plt.hist(y, bins=40)
+        # plt.show()
+
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
-        search = LinearRegression()# HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
-        search.fit(x, y)    
+        search = LinearRegression()#HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+        search.fit(x, y)
         model = search#.best_estimator_
 
         # Get feature importance coefficients and rank features
         coefs = model.coef_
+        print('gini', gini(coefs))
+        
         importances = np.argsort(np.abs(coefs))[::-1]
         opt = importances[0]  # Most important feature
-        print(np.sum(np.abs(x[:,opt])))
+
         # Calculate the R2 score of the model
         score = model.score(x, y)
 
@@ -192,12 +196,12 @@ def stepwise_screening(
         y[mask_positive] -= coefs[opt]
 
         # Remove the most important feature from consideration in subsequent iterations
+        z = np.copy(x)
         x[:, opt] = 0
         options.append(opt)
-        
-        print(np.sum(np.abs(x[:,opt])))
-        
+
     return list(options)
+
 
 # Function to solve a hitting set problem instance
 def find_hitting_set(x: List[np.ndarray]) -> List[int]:
@@ -279,7 +283,11 @@ def find_greedy_hitting_set(x: List[np.ndarray]) -> Set[int]:
 
     return list(hitting_set)
 
-
+def gini(x: List[float]) -> float:
+    x = np.array(x, dtype=np.float32)
+    n = len(x)
+    diffs = sum(abs(i - j) for i, j in itertools.combinations(x, r=2))
+    return diffs / (2 * n**2 * x.mean())
 
 if __name__ == "__main__":
     pass
