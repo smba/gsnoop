@@ -168,7 +168,7 @@ def stepwise_screening(
     ]  # Stores indices of the most important features
     std = np.std(y)  # = 1.0 since we receive standardized data
     params = {
-        "alpha": np.linspace(0, 1, 100),
+        "alpha": np.linspace(1e-12, 1, 100),
     }
 
     for ppp in range(x.shape[1]):
