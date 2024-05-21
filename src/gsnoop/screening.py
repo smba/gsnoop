@@ -171,9 +171,9 @@ def stepwise_screening(
         "alpha": np.linspace(0, 1, 100),
     }
 
-    for _ in range(x.shape[1]):
+    for ppp in range(x.shape[1]):
 
-        print(x.shape)
+        print(ppp, x.shape)
 
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
         search = HalvingGridSearchCV(SGDRegressor(penalty="l2", max_iter=10000), params)
