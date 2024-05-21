@@ -5,7 +5,7 @@ import numpy as np
 
 from joblib import Parallel, delayed
 from typing import List, Set, Dict
-from sklearn.linear_model import SGDRegressor, Lasso
+from sklearn.linear_model import SGDRegressor, LinearRegression
 
 import pulp
 import itertools
@@ -144,50 +144,53 @@ def stable_screening(
     return list(sorted(options))
 
 
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression, Lasso
-
-
-#  initialize with a different r2 threshold, e.g., 0.5 and 0.8, reimplement
 def stepwise_screening(
-    x: np.ndarray, y: np.ndarray, r2_threshold: float = 0.5
-) -> List[int]:
+    x: np.ndarray,
+    y: np.ndarray,
+    std_tolerances: List[float] = [5e-2, 2.5e-2, 1e-2, 5e-3],
+) -> List[List[int]]:
     """
     Identifies important features stepwise until the R² score drops below the threshold.
 
     Parameters:
     - x (np.ndarray): Feature matrix.
     - y (np.ndarray): Target vector.
-    - r2_threshold (float): Minimum R² score threshold to stop the feature selection.
+    - std_tolerances (float): Minimum threshold.
 
     Returns:
-    - List[int]: Indices of the most important features in descending order.
+    - List[List[int]]: Indices of the most important features in descending order.
     """
 
     x = np.copy(x)
+    y = np.copy(y)
 
-    options = []  # Stores indices of the most important features
-    score = 1.0  # Initialize with a high score for the first iterationW
-    params = {'alpha': np.linspace(0, 1, 100)}
-    while score >= r2_threshold:
+    options = [
+        [] for tol in std_tolerances
+    ]  # Stores indices of the most important features
+    std = np.std(y)  # = 1.0 since we receive standardized data
+    params = {
+        "alpha": np.linspace(0, 1, 100),
+    }
 
-        # plt.hist(y, bins=40)
-        # plt.show()
+    for _ in range(x.shape[1]):
 
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
-        search = LinearRegression()#HalvingGridSearchCV(SGDRegressor(penalty='l1', max_iter=5000), params)
+        search = HalvingGridSearchCV(SGDRegressor(penalty="l2", max_iter=5000), params)
         search.fit(x, y)
-        model = search#.best_estimator_
+        model = search.best_estimator_
 
         # Get feature importance coefficients and rank features
         coefs = model.coef_
-        print('gini', gini(coefs))
-        
-        importances = np.argsort(np.abs(coefs))[::-1]
-        opt = importances[0]  # Most important feature
 
-        # Calculate the R2 score of the model
-        score = model.score(x, y)
+        importances = np.argsort(np.abs(coefs))[::-1]
+
+        # Most important feature
+        opt = None
+        seen = []
+        for o in importances:
+            if o not in seen:
+                opt = o
+                break
 
         # Adjust the target values to remove the influence of the most important feature
         mask_negative = np.where(x[:, opt] == -1)[0]
@@ -196,11 +199,22 @@ def stepwise_screening(
         y[mask_positive] -= coefs[opt]
 
         # Remove the most important feature from consideration in subsequent iterations
-        z = np.copy(x)
         x[:, opt] = 0
-        options.append(opt)
 
-    return list(options)
+        new_std = np.std(y)
+
+        loss = std - new_std
+        seen.append(opt)
+        for k, tol in enumerate(std_tolerances):
+            if loss >= tol:
+                options[k].append(opt)
+
+        if loss >= np.min(std_tolerances):
+            std = new_std
+        else:
+            break
+
+    return options
 
 
 # Function to solve a hitting set problem instance
@@ -283,11 +297,6 @@ def find_greedy_hitting_set(x: List[np.ndarray]) -> Set[int]:
 
     return list(hitting_set)
 
-def gini(x: List[float]) -> float:
-    x = np.array(x, dtype=np.float32)
-    n = len(x)
-    diffs = sum(abs(i - j) for i, j in itertools.combinations(x, r=2))
-    return diffs / (2 * n**2 * x.mean())
 
 if __name__ == "__main__":
     pass

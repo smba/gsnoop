@@ -10,7 +10,6 @@ from typing import Tuple, List
 import numpy as np
 
 
-
 def diff_transform_x(x: np.ndarray) -> np.ndarray:
     """
     Calculate pairwise differences between rows of the input array x.
@@ -36,16 +35,13 @@ def diff_transform_y(y: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    y = np.array(
-        [y[i] - y[j] for i, j in itertools.combinations(range(y.shape[0]), 2)]
-    )
+    y = np.array([y[i] - y[j] for i, j in itertools.combinations(range(y.shape[0]), 2)])
     scaler = StandardScaler()
     y_ = scaler.fit_transform(y.reshape(-1, 1)).ravel()
     return y_
 
 
-def diff_transform(
-    x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def diff_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Transform both feature and target arrays using pairwise differences.
 
@@ -59,7 +55,7 @@ def diff_transform(
     """
     x_ = diff_transform_x(x)
     y_ = diff_transform_y(y)
-    
+
     return x_, y_
 
 
