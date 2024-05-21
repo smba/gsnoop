@@ -12,7 +12,6 @@ from gsnoop.screening import (
     find_hitting_set,
     find_greedy_hitting_set,
 )
-import time
 from sklearn.preprocessing import StandardScaler
 
 # Set the random seed for reproducibility
@@ -38,7 +37,7 @@ scaler = StandardScaler()
 y = scaler.fit_transform(y.reshape(-1, 1)).ravel()
 
 x_diff_transformed, y_diff_transformed = diff_transform(x, y)
-"""
+
 # Conduct baseline screening using LASSO
 print("baseline")
 print(baseline_screening(x, y))
@@ -47,12 +46,12 @@ print(baseline_screening(x_diff_transformed, y_diff_transformed))
 print("stable")
 print(stable_screening(x, y))
 print(stable_screening(x_diff_transformed, y_diff_transformed))
-"""
+
 print("stepwise")
 print(y_diff_transformed)
 print(stepwise_screening(x, y))
 print(stepwise_screening(x_diff_transformed, y_diff_transformed))
-"""
+
 x_xor_transformed2, y_xor_transformed2 = xor_transform(x, y)
 x_xor_transformed2 = np.vstack(
     [
@@ -65,4 +64,4 @@ x_xor_transformed2 = np.vstack(
 print("MHS solving")
 causal_options = find_greedy_hitting_set(x_xor_transformed2)
 print(sorted(causal_options))
-"""
+

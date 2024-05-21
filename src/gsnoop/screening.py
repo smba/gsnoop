@@ -5,7 +5,7 @@ import numpy as np
 
 from joblib import Parallel, delayed
 from typing import List, Set, Dict
-from sklearn.linear_model import SGDRegressor, LinearRegression
+from sklearn.linear_model import SGDRegressor
 
 import pulp
 import itertools
