@@ -8,7 +8,6 @@ from typing import List, Set, Dict
 from sklearn.linear_model import SGDRegressor
 
 import pulp
-import itertools
 
 from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV
@@ -26,7 +25,7 @@ def fit_lasso_model(alpha: float, x: np.ndarray, y: np.ndarray) -> SGDRegressor:
     Returns:
     - SGDRegressor: The fitted model.
     """
-    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=1, max_iter=5000)
+    model = SGDRegressor(penalty="l1", alpha=alpha, random_state=1, max_iter=10000)
     model.fit(x, y)
     return model
 
@@ -100,7 +99,7 @@ def baseline_screening(
     params = {
         "alpha": np.linspace(0, 10, 1000),
     }
-    search = HalvingGridSearchCV(SGDRegressor(penalty="l1", max_iter=5000), params)
+    search = HalvingGridSearchCV(SGDRegressor(penalty="l1", max_iter=10000), params)
     search.fit(x, y)
 
     model = search.best_estimator_
@@ -174,8 +173,10 @@ def stepwise_screening(
 
     for _ in range(x.shape[1]):
 
+        print(x.shape)
+
         # Train linear model using stochastic gradient descent, hyperparameter optimization for R2
-        search = HalvingGridSearchCV(SGDRegressor(penalty="l2", max_iter=5000), params)
+        search = HalvingGridSearchCV(SGDRegressor(penalty="l2", max_iter=10000), params)
         search.fit(x, y)
         model = search.best_estimator_
 
