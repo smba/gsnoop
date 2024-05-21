@@ -36,14 +36,16 @@ def diff_transform_y(y: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Array containing pairwise differences.
     """
-    return np.array(
+    y = np.array(
         [y[i] - y[j] for i, j in itertools.combinations(range(y.shape[0]), 2)]
     )
+    scaler = StandardScaler()
+    y_ = scaler.fit_transform(y.reshape(-1, 1)).ravel()
+    return y_
 
 
 def diff_transform(
-    x: np.ndarray, y: np.ndarray, scaler: StandardScaler = None
-) -> Tuple[np.ndarray, np.ndarray]:
+    x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Transform both feature and target arrays using pairwise differences.
 
@@ -57,9 +59,7 @@ def diff_transform(
     """
     x_ = diff_transform_x(x)
     y_ = diff_transform_y(y)
-    if scaler is None:
-        scaler = StandardScaler()
-    y_ = scaler.fit_transform(y_.reshape(-1, 1)).ravel()
+    
     return x_, y_
 
 
